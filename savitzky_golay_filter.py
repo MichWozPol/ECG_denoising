@@ -25,7 +25,7 @@ def denoise_ecg_signal(ecg_signal_original, ecg_signal_denoised, index, window_l
         plt.xlabel('time/sample')
         plt.ylabel('amplitude [mV]')
         plt.plot(index[min_sample:max_sample], ecg_signal_denoised[min_sample:max_sample-1], label=f"Original filtered signal")
-        plt.title(f"Clean and denoised signal, RMSE = {RMSE}, SNR={SNR}, długość okna={window_len}, rząd wielomianu={polyorder}" , fontsize=16)
+        plt.title(f"Clean and denoised signal, RMSE = {RMSE}, SNR={SNR}, window length={window_len}, polynomial order={polyorder}" , fontsize=16)
         plt.legend()
         plt.tight_layout()
         plt.show()
@@ -56,12 +56,12 @@ def find_optimal_polynomial_order_and_frame_size(ecg_signal_original, ecg_signal
     return optimal_window, optimal_order, optimal_mode
 
 if __name__ == "__main__":
-    path_patient2 = r"C:\Users\micha\Documents\Programming\ML\ECG_denoising\ECG_signals\Person_02\rec_1"
+    path_patient2 = r"C:\Users\micha\Documents\Programming\ML\ECG_denoising\ECG_signals\Person_03\rec_1"
     show_patient_record(path_patient2, "Patient 2")
     ecg_signal = choose_enlargement_of_signal(path_patient2, 1000, channels=[0], should_plot_signal=False)
     ecg_signal_denoised = choose_enlargement_of_signal(path_patient2, 1000, channels=[1], should_plot_signal=False)
     ecg_signal = ecg_signal.reshape(1000,)
     data, index = add_indexes(ecg_signal)
     order, window, mode = find_optimal_polynomial_order_and_frame_size(ecg_signal, ecg_signal_denoised, index)
-    denoise_ecg_signal(ecg_signal, ecg_signal_denoised, index, window_len=window, polyorder=order, mode=mode)
+    denoise_ecg_signal(ecg_signal, ecg_signal, index, window_len=17, polyorder=2, mode='interp')
     
