@@ -70,7 +70,7 @@ def denoise_ecg_signal(data, index, wavelet_type='sym11', sub_coeff_of_decomp=2,
 #calculate the SNR according to an article equation
 def signal_to_noise_ratio(original, denoised):
     orig_sum_square = sum(i*i for i in original)
-    pred_mins_orig = sum((x-y)**2 for x,y in zip(denoised, original))
+    pred_mins_orig = sum((y-x)**2 for x,y in zip(denoised, original))
     return 10*math.log10(orig_sum_square/pred_mins_orig)
 
 
@@ -86,7 +86,7 @@ def calculate_metrics(ecg_signal_original, ecg_signal_denoised, index, wavelet_t
         plt.xlabel('time/sample')
         plt.ylabel('amplitude [mV]')
         plt.plot(index[min_sample:max_sample_index+1], ecg_signal_original[min_sample:max_sample_index], label=f"Original filtered signal")
-        plt.title(f"Clean and denoised signal, RMSE = {RMSE}, SNR = {SNR} wavelet type = {wavelet_type}, level of decomposition = {dec_lvl}", fontsize=16)
+        plt.title(f"Clean and denoised signal, RMSE = {RMSE}, SNR = {SNR}\n wavelet type = {wavelet_type}, level of decomposition = {dec_lvl}", fontsize=16)
         plt.legend()
         plt.tight_layout()
         plt.show()
@@ -111,6 +111,7 @@ def ecg_wavelet_denoising(path, wavelet='sym13', sub_coeff_of_decomp=3, enlargem
     ecg_filtered_signal = choose_enlargement_of_signal(path, nb_of_sampels=enlargement, channels=[1], should_plot_signal=False)
     data, index = add_indexes(ecg_signal)
     reconstructed, dec_lvl = denoise_ecg_signal(data, index, sub_coeff_of_decomp = sub_coeff_of_decomp, should_plot_signal=False)
+    #below in the reconstrucred signal param specific value should be substracted in order to change a basic line level
     RMSE, SNR, dec_lvl =  calculate_metrics(ecg_filtered_signal, reconstructed, index, wavelet, dec_lvl, should_plot_signal=True)
     print(f"RMSE for given signal: {RMSE}, SNR for given signal: {SNR}")
     
@@ -139,5 +140,7 @@ if __name__ == "__main__":
     path_patient1 = r"C:\Users\micha\Documents\Programming\ML\ECG_denoising\ECG_signals\Person_01\rec_1"
     path_patient2 = r"C:\Users\micha\Documents\Programming\ML\ECG_denoising\ECG_signals\Person_02\rec_1"
     show_patient_record(path_patient1, "Patient 1")
+    choose_enlargement_of_signal(path_patient1)
+    choose_enlargement_of_signal(path_patient1, channels=[1])
     choose_best_wavelet_and_decomposition_level(path_patient1)
-    ecg_wavelet_denoising(path_patient1, sub_coeff_of_decomp=2, wavelet='sym13', enlargement=1000)
+    ecg_wavelet_denoising(path_patient1, sub_coeff_of_decomp=2, wavelet='sym10', enlargement=1000)
