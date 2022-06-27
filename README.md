@@ -38,6 +38,9 @@ Simple neural network consisted of LSTM layer and densely connected following la
 <br>mean RMSE = 3.047
 <br>mean MAD = 0.689
 
+## Results Overview
+<img src="results/joint_results.png">
+
 ## Databases
 <ul>
   <li><a href="https://physionet.org/content/ecgiddb/1.0.0/">ECG-ID Database</a></li>
